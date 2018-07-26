@@ -10,3 +10,6 @@ This is a screen recorder based on Kivy and FFmpeg.
 ```
 python3 main.py
 ```
+
+### Recorded Videos
+`~/Videos/doing`
