@@ -1,6 +1,7 @@
 from kivy.app import App 
 from kivy.lang import Builder 
 from kivy.uix.screenmanager import Screen 
+from kivy.config import Config
 
 from auto_everything.base import Terminal
 t = Terminal()
@@ -62,4 +63,6 @@ class ScreenRecorder(App):
         return OneScreen() 
     
 
+Config.set('graphics', 'width', '300')
+Config.set('graphics', 'height', '100')
 ScreenRecorder().run()
