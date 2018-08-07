@@ -71,7 +71,7 @@ class OneScreen(Screen):
         if t.is_running("ffmpeg"):
             if self.ids['pause_or_resume'].text in "Resume":
                 self.resume()
-            t.kill("ffmpeg")
+            t.kill("ffmpeg", force=False, wait=True)
             print("Stoped!")
             self.ids['my_button'].text = "Record"
 
