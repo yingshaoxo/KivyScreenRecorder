@@ -34,9 +34,10 @@ class OneScreen(Screen):
         super(OneScreen, self).__init__(**kwargs)
 
     def record_button(self):
-        if self.ids['my_button'].text in "Record":
+        if not t.is_running("ffmpeg"):
             self.record()
-        elif self.ids['my_button'].text in "Stop":
+        else:
+            time.sleep(3)
             self.stop()
 
     def pause_or_resume_button(self):
@@ -71,7 +72,7 @@ class OneScreen(Screen):
         if t.is_running("ffmpeg"):
             if self.ids['pause_or_resume'].text in "Resume":
                 self.resume()
-            t.kill("ffmpeg", force=False, wait=True)
+            t.kill("ffmpeg", force=False, wait=False)
             print("Stoped!")
             self.ids['my_button'].text = "Record"
 
@@ -93,6 +94,7 @@ class OneScreen(Screen):
             pids = t._get_pids("ffmpeg")
             [t.run_command(
                 "sudo kill -s SIGCONT {pid}".format(pid=pid)) for pid in pids]
+            self.get_root_window().minimize()
             print("resumed!")
             self.ids['pause_or_resume'].text = "Pause"
 
@@ -104,6 +106,8 @@ class ScreenRecorder(App):
     def on_stop(self):
         from pprint import pprint
         self.get_running_app().root.stop()
+        while t.is_running("ffmpeg"):
+            time.sleep(1)
 
 
 Config.set('graphics', 'width', '400')
