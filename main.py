@@ -13,16 +13,10 @@ import time
 Builder.load_string('''
 <OneScreen> 
     BoxLayout: 
-        #orientation: 'vertical'
         Button: 
             id: my_button
             text: 'Record' 
             on_release: root.record_button() 
-            font_size: 46 
-        Button: 
-            id: pause_or_resume
-            text: 'Pause' 
-            on_release: root.pause_or_resume_button() 
             font_size: 46 
 ''')
 
@@ -37,15 +31,7 @@ class OneScreen(Screen):
         if not t.is_running("ffmpeg"):
             self.record()
         else:
-            time.sleep(3)
             self.stop()
-
-    def pause_or_resume_button(self):
-        if self.ids['my_button'].text in "Stop":
-            if self.ids['pause_or_resume'].text in "Pause":
-                self.pause()
-            elif self.ids['pause_or_resume'].text in "Resume":
-                self.resume()
 
     def record(self):
         if t.system_type == "linux":
@@ -70,33 +56,9 @@ class OneScreen(Screen):
 
     def stop(self):
         if t.is_running("ffmpeg"):
-            if self.ids['pause_or_resume'].text in "Resume":
-                self.resume()
-            t.kill("ffmpeg", force=False, wait=False)
+            t.kill("ffmpeg", force=False, wait=True)
             print("Stoped!")
             self.ids['my_button'].text = "Record"
-
-            """
-            while (t.is_running("ffmpeg")):
-                time.sleep(1)
-            """
-
-    def pause(self):
-        if t.is_running("ffmpeg"):
-            pids = t._get_pids("ffmpeg")
-            [t.run_command(
-                "sudo kill -s SIGSTOP {pid}".format(pid=pid)) for pid in pids]
-            print("Paused!")
-            self.ids['pause_or_resume'].text = "Resume"
-
-    def resume(self):
-        if t.is_running("ffmpeg"):
-            pids = t._get_pids("ffmpeg")
-            [t.run_command(
-                "sudo kill -s SIGCONT {pid}".format(pid=pid)) for pid in pids]
-            self.get_root_window().minimize()
-            print("resumed!")
-            self.ids['pause_or_resume'].text = "Pause"
 
 
 class ScreenRecorder(App):
@@ -106,10 +68,8 @@ class ScreenRecorder(App):
     def on_stop(self):
         from pprint import pprint
         self.get_running_app().root.stop()
-        while t.is_running("ffmpeg"):
-            time.sleep(1)
 
 
-Config.set('graphics', 'width', '400')
+Config.set('graphics', 'width', '200')
 Config.set('graphics', 'height', '100')
 ScreenRecorder().run()
