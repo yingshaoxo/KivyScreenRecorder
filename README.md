@@ -13,3 +13,7 @@ python3 main.py
 
 ### Recorded Videos
 `~/Videos/doing`
+
+___
+
+![how is looks like](screenshot/1.png)
